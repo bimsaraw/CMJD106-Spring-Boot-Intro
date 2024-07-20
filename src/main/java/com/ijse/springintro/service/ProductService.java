@@ -10,4 +10,5 @@ import com.ijse.springintro.entity.Product;
 public interface ProductService {
     List<Product> getAllProducts();
     Product createProduct(Product product);
+    Product updateProduct(Long id, Product product);
 }
