@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,7 +53,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/{productId}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, ProductReqDTO productReqDTO) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody ProductReqDTO productReqDTO) {
         Product product = new Product();
         product.setName(productReqDTO.getName());
         product.setPrice(productReqDTO.getPrice());
@@ -62,9 +63,21 @@ public class ProductController {
         Category category = categoryService.getCategoryById(productReqDTO.getCategoryId());
         product.setCategory(category);
 
-        Product updatedProduct = productService.updateProduct(productId, product);
+        try {
+            productService.updateProduct(productId, product);
+        } catch (Exception error) {
+            System.out.println(error);
+        }
+        
 
-        return ResponseEntity.status(200).body(updatedProduct);
+        return ResponseEntity.status(200).body(product);
 
+    }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
+
+        return ResponseEntity.status(200).body("Product Deleted");
     }
 }
